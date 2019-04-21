@@ -6,6 +6,12 @@ import tensorflow_datasets as tfds
 def cleaning(text):
     ''' Performs cleaning of text of punctuation, digits,
         excessive spaces and transfers to lower-case
+
+        Parameters:
+            text: String to clean
+
+        Returns:
+            text: The cleaned String
     '''
     exclude = set(string.punctuation + string.digits + '«»…‘’―–—‽')
     text = text.lower().strip()
@@ -17,6 +23,15 @@ def cleaning(text):
 def process_data(data, max_sentence_length, SOS, EOS):
     ''' Performs data cleaning, filtering of maximal allowed sentence length, appending of Start-of-String
         and End-of-String characters
+
+        Parameters:
+            data: The Pandas DataFrame data corpus for procession
+            max_sentence_length: An upper bound of sequence length to get rid of lengthy outliers
+            SOS: Start-of-String character
+            EOS: End-of-String character
+
+        Returns:
+            processed_data: The processed Pandas DataFrame data corpus
     '''
     processed_data = data.copy()
     cleaner = lambda x: cleaning(x)
@@ -35,7 +50,15 @@ def process_data(data, max_sentence_length, SOS, EOS):
     return processed_data.iloc[keep_idx]
 
 def tokenize_data(data, vocab_size=2**15):
-    ''' Performs subword data tokenizing with a given vocabulary size'''
+    ''' Performs subword data tokenizing with a given vocabulary size
+
+        Parameters:
+            data: The Pandas Series language data corpus
+            vocab_size: the number of tokens for vocabulary
+
+        Returns:
+            tokenizer: Tensorflow SubwordTextEncoder object
+    '''
     tokenizer = tfds.features.text.SubwordTextEncoder.build_from_corpus(
         data, target_vocab_size=vocab_size)
 

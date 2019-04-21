@@ -69,11 +69,13 @@ class Seq2Seq():
             self._inference_model()
 
         def _train_model(self, encoder_states):
+            ''' Creates the computational graph for training '''
             embeddings = self.decoder_emb(self.decoder_input)
             decoder_outputs, state_h, state_c = self.decoder_lstm(embeddings, initial_state=encoder_states)
             self.decoder_outputs = self.decoder_dense(decoder_outputs)
 
         def _inference_model(self):
+            ''' Creates the computational graph for inference '''
             embeddings = self.decoder_emb(self.decoder_input)
             decoder_outputs, state_h, state_c = self.decoder_lstm(embeddings, initial_state=self.decoder_initial_state)
             self.decoder_states = [state_h, state_c]
@@ -84,7 +86,7 @@ class Seq2Seq():
                          [self.decoder_inference_outputs] + self.decoder_states)
 
     def train(self, X_train, y_train, X_test, y_test, batch_size=128, epochs=10):
-        '''Train model given train and validation data'''
+        ''' Train model given train and validation data '''
         train_samples = len(X_train)
         val_samples = len(X_test)
 
@@ -113,8 +115,9 @@ class Seq2Seq():
                 yield ([encoder_input_data, decoder_input_data], decoder_target_data)
 
     def decode_sequence(self, input_seq):
-        '''Performs a sentence encoding and
-        a sequential decoding of encoded vector word by word till EOS symbol'''
+        ''' Performs a sentence encoding and
+            a sequential decoding of encoded vector word by word till EOS symbol
+        '''
         # Encode the input as state vectors.
         states_value = self.encoder_model.predict(input_seq)
 
@@ -144,6 +147,6 @@ class Seq2Seq():
         return decoded_sentence
 
     def translate_sentence(self, sentence):
-        '''Translate given sentence'''
+        ''' Translates given sentence '''
         decoded_sentence = self.decode_sequence(sentence)
         return decoded_sentence

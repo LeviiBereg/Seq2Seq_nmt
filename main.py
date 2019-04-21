@@ -7,6 +7,7 @@ from nn_model import Seq2Seq
 
 if __name__ == "__main__":
 
+    # Start-of-String and End-of-String characters
     EOS = '_EOS'
     SOS = 'SOS_'
 
@@ -30,6 +31,7 @@ if __name__ == "__main__":
     tokenizer_en = tokenize_data(data.en, vocab_size=2 ** 15)
     tokenizer_ru = tokenize_data(data.ru, vocab_size=2 ** 15)
 
+    # Define maximal sequence lengths for encoder and decoder with an additional space
     encoder_max_length = max([len(tokenizer_en.encode(sentence)) for sentence in data.en]) + 5
     decoder_max_length = max([len(tokenizer_ru.encode(sentence)) for sentence in data.ru]) + 5
 
@@ -40,9 +42,8 @@ if __name__ == "__main__":
     emb_size = 300
     lstm_hidden_size = 200
     dropout_rate = 0.2
-
     batch_size = 128
-    epochs = 10
+    epochs = 15
 
     seq2seq_model = Seq2Seq(tokenizer_en,
                             tokenizer_ru,
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         decoded_sentence = seq2seq_model.translate_sentence(input_seq)
         print('English input:\t', X_test[k])
         print('Expected translation:', y_test[k].replace(SOS + ' ', "").replace(' ' + EOS, ""))
-        print('Provided translation:', decoded_sentence)
+        print('Provided translation:', decoded_sentence.strip())
         print()
 
 
